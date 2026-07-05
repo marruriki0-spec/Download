@@ -3,19 +3,16 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Content Locker · Nexus</title>
+    <title>ปลดล็อกดาวน์โหลด</title>
 
-    <!-- Fonts & Icons -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
-
-    <!-- GSAP & AOS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <!-- GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js">
+    </script>
 
     <style>
-        /* ===== RESET & BASE ===== */
+        /* ===== RESET + BASE ===== */
         * {
             margin: 0;
             padding: 0;
@@ -23,590 +20,500 @@
         }
 
         body {
-            font-family: 'Poppins', sans-serif;
-            background: #0b0b0f;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
             min-height: 100vh;
             display: flex;
-            align-items: center;
             justify-content: center;
-            padding: 1.5rem;
+            align-items: center;
+            padding: 24px;
+            background: #0b0b12;
             color: #f0f0f5;
-            overflow-x: hidden;
             position: relative;
+            overflow-x: hidden;
         }
 
-        /* ===== LOADING SCREEN ===== */
-        #loader {
+        .bg-glow {
             position: fixed;
             inset: 0;
-            background: #0b0b0f;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
-            transition: opacity 0.8s ease, visibility 0.8s ease;
+            z-index: 0;
+            background: radial-gradient(circle at 20% 30%, #1e1029, #0b0b12 70%);
+            animation: bgPulse 12s ease-in-out infinite alternate;
         }
-        #loader.hide {
-            opacity: 0;
-            visibility: hidden;
-            pointer-events: none;
-        }
-        .loader-ring {
-            width: 60px;
-            height: 60px;
-            border: 4px solid rgba(255, 255, 255, 0.05);
-            border-top: 4px solid #a855f7;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
+        @keyframes bgPulse {
+            0% {
+                background: radial-gradient(circle at 20% 30%, #1e1029, #0b0b12 70%);
+            }
+            100% {
+                background: radial-gradient(circle at 80% 70%, #1a0a2e, #0b0b12 70%);
             }
         }
-        #loader p {
-            margin-top: 1.2rem;
-            font-weight: 300;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            font-size: 0.8rem;
-            color: rgba(255, 255, 255, 0.4);
-        }
 
-        /* ===== PARTICLE CANVAS ===== */
-        #particles {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-            pointer-events: none;
-        }
-
-        /* ===== CONTAINER ===== */
         .container {
             position: relative;
             z-index: 1;
             max-width: 900px;
             width: 100%;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 40px;
+            padding: 48px 36px;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(168, 85, 247, 0.05) inset;
+            transition: 0.4s;
         }
 
-        /* ===== HERO ===== */
-        .hero {
-            text-align: center;
-            margin-bottom: 3.5rem;
-        }
         .badge {
             display: inline-block;
-            background: rgba(168, 85, 247, 0.15);
-            backdrop-filter: blur(8px);
-            padding: 0.4rem 1.6rem;
-            border-radius: 40px;
-            font-size: 0.7rem;
-            font-weight: 500;
-            letter-spacing: 2px;
+            background: rgba(168, 85, 247, 0.08);
+            border: 1px solid rgba(168, 85, 247, 0.08);
+            padding: 6px 22px;
+            border-radius: 60px;
+            font-size: 0.6rem;
+            font-weight: 600;
+            letter-spacing: 2.5px;
             text-transform: uppercase;
-            color: #c084fc;
-            border: 1px solid rgba(168, 85, 247, 0.2);
-            margin-bottom: 1.2rem;
+            color: #a78bfa;
+            margin-bottom: 18px;
+            backdrop-filter: blur(4px);
         }
-        .hero h1 {
-            font-size: clamp(2rem, 6vw, 3.4rem);
-            font-weight: 700;
+
+        h1 {
+            font-size: clamp(2rem, 5.5vw, 3.4rem);
+            font-weight: 800;
             line-height: 1.2;
-            background: linear-gradient(135deg, #f0f0f5 0%, #a78bfa 100%);
+            background: linear-gradient(135deg, #f0f0f5 20%, #a78bfa 60%, #7c3aed 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-        }
-        .sub {
-            font-weight: 300;
-            color: rgba(255, 255, 255, 0.5);
-            margin-top: 0.5rem;
-            letter-spacing: 1px;
+            filter: drop-shadow(0 0 30px rgba(168, 85, 247, 0.08));
         }
 
-        /* ===== PROGRESS ===== */
-        .progress-wrapper {
+        .sub {
+            font-weight: 300;
+            color: rgba(255, 255, 255, 0.3);
+            margin: 6px 0 28px;
+            letter-spacing: 1.5px;
+            font-size: 0.9rem;
+        }
+
+        .progress-wrap {
             display: flex;
             align-items: center;
-            gap: 1.2rem;
-            margin-top: 2rem;
-            max-width: 400px;
-            margin-left: auto;
-            margin-right: auto;
+            gap: 16px;
+            max-width: 420px;
+            margin: 0 auto 40px;
         }
+
         .progress-bar {
             flex: 1;
-            height: 6px;
-            background: rgba(255, 255, 255, 0.06);
+            height: 5px;
+            background: rgba(255, 255, 255, 0.04);
             border-radius: 20px;
             overflow: hidden;
-            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.4);
+            box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.5);
         }
+
         .progress-fill {
             height: 100%;
             width: 0%;
-            background: linear-gradient(90deg, #a855f7, #7c3aed);
+            background: linear-gradient(90deg, #7c3aed, #a855f7, #d946ef);
             border-radius: 20px;
-            transition: width 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
             box-shadow: 0 0 20px rgba(168, 85, 247, 0.3);
+            position: relative;
         }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: -2px;
+            width: 12px;
+            height: 9px;
+            background: #a855f7;
+            border-radius: 50%;
+            filter: blur(8px);
+            opacity: 0.7;
+        }
+
         .progress-label {
-            font-weight: 500;
-            font-size: 0.85rem;
-            color: rgba(255, 255, 255, 0.7);
-            min-width: 40px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.35);
+            min-width: 44px;
             text-align: right;
+            letter-spacing: 0.3px;
         }
 
-        /* ===== TASK GRID ===== */
-        .tasks-grid {
+        .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 1.8rem;
-            margin-bottom: 3rem;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
         }
 
-        /* ===== TASK CARD ===== */
-        .task-card {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 24px;
-            padding: 2rem 1.5rem;
+        .card {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 28px;
+            padding: 32px 18px 26px;
             text-align: center;
             transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 8px 28px rgba(0, 0, 0, 0.3);
             position: relative;
             overflow: hidden;
         }
-        .task-card::before {
+
+        .card::before {
             content: '';
             position: absolute;
             inset: 0;
-            border-radius: 24px;
+            border-radius: 28px;
             padding: 1px;
-            background: linear-gradient(135deg, rgba(168, 85, 247, 0.2), transparent, rgba(168, 85, 247, 0.1));
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.08), transparent 60%, rgba(168, 85, 247, 0.03));
             -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
             -webkit-mask-composite: xor;
             mask-composite: exclude;
             pointer-events: none;
         }
-        .task-card:hover {
+
+        .card:hover {
             transform: translateY(-10px) scale(1.02);
-            background: rgba(255, 255, 255, 0.06);
-            border-color: rgba(168, 85, 247, 0.2);
-            box-shadow: 0 20px 50px rgba(168, 85, 247, 0.15);
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(168, 85, 247, 0.12);
+            box-shadow: 0 24px 60px rgba(168, 85, 247, 0.06), 0 0 0 1px rgba(168, 85, 247, 0.05) inset;
         }
-        .card-icon {
+
+        .card i {
             font-size: 2.8rem;
             color: #a855f7;
-            margin-bottom: 0.8rem;
-            transition: transform 0.3s ease;
-        }
-        .task-card:hover .card-icon {
-            transform: scale(1.1) rotate(-5deg);
-        }
-        .task-card h3 {
-            font-weight: 600;
-            font-size: 1.1rem;
-            margin-bottom: 0.2rem;
-            color: #f0f0f5;
-        }
-        .task-card p {
-            font-weight: 300;
-            font-size: 0.85rem;
-            color: rgba(255, 255, 255, 0.4);
-            margin-bottom: 1.4rem;
+            margin-bottom: 10px;
+            display: inline-block;
+            transition: 0.4s ease;
+            filter: drop-shadow(0 0 12px rgba(168, 85, 247, 0.08));
         }
 
-        /* ===== TASK BUTTON ===== */
-        .task-btn {
-            background: rgba(168, 85, 247, 0.12);
-            border: 1px solid rgba(168, 85, 247, 0.2);
-            color: #c084fc;
-            padding: 0.6rem 1.8rem;
-            border-radius: 40px;
-            font-family: 'Poppins', sans-serif;
-            font-weight: 500;
+        .card:hover i {
+            transform: scale(1.12) rotate(-4deg);
+            filter: drop-shadow(0 0 28px rgba(168, 85, 247, 0.15));
+        }
+
+        .card h3 {
+            font-weight: 700;
+            font-size: 1.05rem;
+            letter-spacing: -0.2px;
+        }
+
+        .card p {
             font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.25);
+            margin: 4px 0 18px;
+            font-weight: 300;
+        }
+
+        /* ===== BUTTON ===== */
+        .btn-task {
+            background: rgba(168, 85, 247, 0.06);
+            border: 1px solid rgba(168, 85, 247, 0.1);
+            color: #c084fc;
+            padding: 10px 28px;
+            border-radius: 60px;
+            font-weight: 600;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
             cursor: pointer;
             transition: all 0.3s ease;
-            letter-spacing: 0.5px;
-            position: relative;
-        }
-        .task-btn:hover:not(.completed) {
-            background: rgba(168, 85, 247, 0.25);
-            border-color: #a855f7;
-            box-shadow: 0 0 30px rgba(168, 85, 247, 0.2);
-            transform: scale(1.05);
-        }
-        .task-btn:active:not(.completed) {
-            transform: scale(0.95);
-        }
-        .task-btn.completed {
-            background: rgba(34, 197, 94, 0.15);
-            border-color: #22c55e;
-            color: #4ade80;
-            cursor: default;
-            pointer-events: none;
-        }
-        .task-status {
-            display: none;
-            margin-top: 0.6rem;
-            font-size: 0.75rem;
-            color: #4ade80;
-            font-weight: 500;
-            align-items: center;
-            justify-content: center;
-            gap: 0.4rem;
-        }
-        .task-status.show {
-            display: flex;
+            backdrop-filter: blur(4px);
         }
 
-        /* ===== DOWNLOAD SECTION ===== */
-        .download-section {
-            text-align: center;
+        .btn-task:hover:not(:disabled) {
+            background: rgba(168, 85, 247, 0.14);
+            border-color: #a855f7;
+            box-shadow: 0 0 30px rgba(168, 85, 247, 0.08);
+            transform: scale(1.04);
         }
-        #downloadBtn {
-            position: relative;
-            background: rgba(255, 255, 255, 0.04);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 60px;
-            padding: 1rem 3rem;
-            font-family: 'Poppins', sans-serif;
+
+        .btn-task:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-task.done {
+            background: rgba(34, 197, 94, 0.08);
+            border-color: rgba(34, 197, 94, 0.2);
+            color: #4ade80;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
             font-weight: 600;
-            font-size: 1.1rem;
-            color: rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-task.done i {
+            font-size: 0.9rem;
+            color: #4ade80;
+            margin: 0;
+            filter: none;
+            animation: popCheck 0.4s ease;
+        }
+
+        @keyframes popCheck {
+            0% {
+                transform: scale(0.3) rotate(-20deg);
+                opacity: 0;
+            }
+            60% {
+                transform: scale(1.3) rotate(5deg);
+            }
+            100% {
+                transform: scale(1) rotate(0deg);
+                opacity: 1;
+            }
+        }
+
+        .status-text {
+            display: none;
+        }
+
+        /* ===== DOWNLOAD ===== */
+        .download-wrap {
+            text-align: center;
+            margin-top: 6px;
+        }
+
+        #downloadBtn {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            padding: 16px 48px;
+            border-radius: 60px;
+            font-size: 1rem;
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.15);
             cursor: not-allowed;
             transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
-            min-width: 260px;
+            box-shadow: 0 8px 28px rgba(0, 0, 0, 0.3);
+            letter-spacing: 0.5px;
+            min-width: 240px;
         }
+
         #downloadBtn.active {
-            background: linear-gradient(135deg, #7c3aed, #a855f7);
-            border-color: #a855f7;
+            background: linear-gradient(135deg, #6d28d9, #7c3aed, #a855f7);
+            border-color: rgba(168, 85, 247, 0.2);
             color: #fff;
             cursor: pointer;
-            box-shadow: 0 0 40px rgba(168, 85, 247, 0.3), 0 0 80px rgba(168, 85, 247, 0.1);
-            animation: glowPulse 2s ease-in-out infinite;
+            box-shadow: 0 0 50px rgba(168, 85, 247, 0.15), 0 0 100px rgba(168, 85, 247, 0.04);
+            animation: glowPulse 2.8s ease-in-out infinite;
         }
+
         #downloadBtn.active:hover {
             transform: scale(1.05);
-            box-shadow: 0 0 60px rgba(168, 85, 247, 0.5), 0 0 120px rgba(168, 85, 247, 0.2);
+            box-shadow: 0 0 70px rgba(168, 85, 247, 0.25), 0 0 140px rgba(168, 85, 247, 0.08);
         }
+
         @keyframes glowPulse {
             0%,
             100% {
-                box-shadow: 0 0 40px rgba(168, 85, 247, 0.3), 0 0 80px rgba(168, 85, 247, 0.1);
+                box-shadow: 0 0 50px rgba(168, 85, 247, 0.15), 0 0 100px rgba(168, 85, 247, 0.04);
             }
             50% {
-                box-shadow: 0 0 60px rgba(168, 85, 247, 0.5), 0 0 120px rgba(168, 85, 247, 0.2);
+                box-shadow: 0 0 70px rgba(168, 85, 247, 0.25), 0 0 140px rgba(168, 85, 247, 0.08);
             }
-        }
-        #downloadBtn .btn-content {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.8rem;
-        }
-        .btn-glow {
-            position: absolute;
-            inset: -2px;
-            border-radius: 60px;
-            background: linear-gradient(135deg, #a855f7, #7c3aed);
-            opacity: 0;
-            transition: opacity 0.5s ease;
-            filter: blur(20px);
-            z-index: -1;
-        }
-        #downloadBtn.active .btn-glow {
-            opacity: 0.6;
-        }
-        .hint {
-            margin-top: 1rem;
-            font-size: 0.8rem;
-            color: rgba(255, 255, 255, 0.3);
-            font-weight: 300;
-            letter-spacing: 0.5px;
-            transition: color 0.3s ease;
-        }
-        .hint.success {
-            color: #4ade80;
         }
 
-        /* ===== RESPONSIVE ===== */
+        .hint {
+            margin-top: 14px;
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.15);
+            font-weight: 300;
+            letter-spacing: 0.8px;
+            transition: 0.4s;
+        }
+
+        .hint.success {
+            color: #4ade80;
+            font-weight: 400;
+        }
+
         @media (max-width: 640px) {
-            .tasks-grid {
-                grid-template-columns: 1fr;
-                gap: 1.2rem;
+            .container {
+                padding: 28px 16px;
+                border-radius: 28px;
             }
-            .task-card {
-                padding: 1.5rem 1rem;
+            .grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
             }
             #downloadBtn {
-                min-width: 200px;
-                padding: 0.8rem 1.8rem;
-                font-size: 0.95rem;
+                min-width: 180px;
+                padding: 14px 24px;
+                font-size: 0.9rem;
             }
         }
     </style>
 </head>
 <body>
 
-    <!-- ===== LOADING SCREEN ===== -->
-    <div id="loader">
-        <div class="loader-ring"></div>
-        <p>unlocking experience...</p>
+    <div class="bg-glow"></div>
+
+    <div class="container">
+
+        <div class="badge">✦ สิทธิ์พิเศษ</div>
+
+        <h1>ทำภารกิจให้ครบ<br />เพื่อปลดล็อกดาวน์โหลด</h1>
+        <p class="sub">3 ขั้นตอนง่าย ๆ · รับเลยทันที</p>
+
+        <div class="progress-wrap">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <span class="progress-label" id="progressLabel">0 / 3</span>
+        </div>
+
+        <div class="grid">
+
+            <div class="card" data-task="1">
+                <i class="fab fa-tiktok"></i>
+                <h3>ติดตาม TikTok</h3>
+                <p>@riki74139</p>
+                <button class="btn-task" data-task="1" data-url="https://www.tiktok.com/@riki74139?_r=1&_t=ZS-97hDUT7To1d">เริ่มทำภารกิจ</button>
+                <div class="status-text" style="display:none;"></div>
+            </div>
+
+            <div class="card" data-task="2">
+                <i class="fab fa-youtube"></i>
+                <h3>ติดตาม YouTube</h3>
+                <p>@user-wv4hy7up9j</p>
+                <button class="btn-task" data-task="2" data-url="https://www.youtube.com/@user-wv4hy7up9j?sub_confirmation=1">เริ่มทำภารกิจ</button>
+                <div class="status-text" style="display:none;"></div>
+            </div>
+
+            <div class="card" data-task="3">
+                <i class="fas fa-comment"></i>
+                <h3>คอมเมนต์คลิป</h3>
+                <p>คลิป: ODpxafr3spE</p>
+                <button class="btn-task" data-task="3" data-url="https://youtu.be/ODpxafr3spE?si=sjWvJU6lpr7QyxFK">เริ่มทำภารกิจ</button>
+                <div class="status-text" style="display:none;"></div>
+            </div>
+
+        </div>
+
+        <div class="download-wrap">
+            <button id="downloadBtn" disabled>
+                <i class="fas fa-lock"></i> ดาวน์โหลดถูกล็อก
+            </button>
+            <p class="hint" id="hintText">ทำภารกิจให้ครบ 3 ข้อเพื่อปลดล็อก</p>
+        </div>
+
     </div>
 
-    <!-- ===== PARTICLE BACKGROUND ===== -->
-    <canvas id="particles"></canvas>
-
-    <!-- ===== MAIN CONTENT ===== -->
-    <main class="container">
-
-        <!-- HERO -->
-        <section class="hero" data-aos="fade-up" data-aos-duration="1200">
-            <div class="badge">✦ exclusive access</div>
-            <h1>Complete the tasks to unlock your download.</h1>
-            <p class="sub">Three simple steps · instant reward</p>
-
-            <div class="progress-wrapper">
-                <div class="progress-bar">
-                    <div class="progress-fill" id="progressFill" style="width: 0%;"></div>
-                </div>
-                <span class="progress-label" id="progressLabel">0 / 3</span>
-            </div>
-        </section>
-
-        <!-- TASK CARDS -->
-        <div class="tasks-grid">
-
-            <!-- Task 1: TikTok -->
-            <div class="task-card" data-aos="flip-up" data-aos-delay="100" data-task="1">
-                <div class="card-icon"><i class="fab fa-tiktok"></i></div>
-                <h3>Follow TikTok</h3>
-                <p>@riki74139</p>
-                <button class="task-btn" data-task="1" data-url="https://www.tiktok.com/@riki74139?_r=1&_t=ZS-97hDUT7To1d">Complete</button>
-                <div class="task-status"><i class="fas fa-check-circle"></i> Completed</div>
-            </div>
-
-            <!-- Task 2: YouTube Subscribe -->
-            <div class="task-card" data-aos="flip-up" data-aos-delay="200" data-task="2">
-                <div class="card-icon"><i class="fab fa-youtube"></i></div>
-                <h3>Subscribe YouTube</h3>
-                <p>@user-wv4hy7up9j</p>
-                <button class="task-btn" data-task="2" data-url="https://www.youtube.com/@user-wv4hy7up9j?sub_confirmation=1">Complete</button>
-                <div class="task-status"><i class="fas fa-check-circle"></i> Completed</div>
-            </div>
-
-            <!-- Task 3: Comment on YouTube -->
-            <div class="task-card" data-aos="flip-up" data-aos-delay="300" data-task="3">
-                <div class="card-icon"><i class="fas fa-comment"></i></div>
-                <h3>Comment on YouTube</h3>
-                <p>Video: VogDFS2fMzo</p>
-                <button class="task-btn" data-task="3" data-url="https://youtu.be/VogDFS2fMzo?si=aLNoPzdZPaKIj5Es">Complete</button>
-                <div class="task-status"><i class="fas fa-check-circle"></i> Completed</div>
-            </div>
-        </div>
-
-        <!-- DOWNLOAD BUTTON -->
-        <div class="download-section" data-aos="zoom-in" data-aos-delay="400">
-            <button id="downloadBtn" disabled>
-                <span class="btn-content"><i class="fas fa-lock"></i> Download locked</span>
-                <span class="btn-glow"></span>
-            </button>
-            <p class="hint" id="hintText">Complete all tasks to unlock</p>
-        </div>
-
-    </main>
-
     <script>
-        // ===== INIT AOS =====
-        AOS.init({
-            once: true,
-            duration: 800,
-            easing: 'ease-out-cubic'
-        });
+        // ============================================================
+        //  LOGIC
+        // ============================================================
 
-        // ===== LOADING SCREEN =====
-        window.addEventListener('load', () => {
-            const loader = document.getElementById('loader');
-            loader.classList.add('hide');
-            gsap.from('.hero', { opacity: 0, y: 40, duration: 1.2, ease: 'power3.out' });
-        });
+        var tasks = {
+            1: false,
+            2: false,
+            3: false
+        };
 
-        // ===== PARTICLE BACKGROUND =====
-        (function initParticles() {
-            const canvas = document.getElementById('particles');
-            const ctx = canvas.getContext('2d');
-            let w, h;
-            const particles = [];
-            const count = 80;
+        var progressFill = document.getElementById('progressFill');
+        var progressLabel = document.getElementById('progressLabel');
+        var downloadBtn = document.getElementById('downloadBtn');
+        var hintText = document.getElementById('hintText');
 
-            function resize() {
-                w = canvas.width = window.innerWidth;
-                h = canvas.height = window.innerHeight;
-            }
-            window.addEventListener('resize', resize);
-            resize();
-
-            class Particle {
-                constructor() {
-                    this.x = Math.random() * w;
-                    this.y = Math.random() * h;
-                    this.size = Math.random() * 2 + 1;
-                    this.speedX = (Math.random() - 0.5) * 0.5;
-                    this.speedY = (Math.random() - 0.5) * 0.5;
-                    this.opacity = Math.random() * 0.5 + 0.2;
-                }
-                update() {
-                    this.x += this.speedX;
-                    this.y += this.speedY;
-                    if (this.x > w) this.x = 0;
-                    if (this.x < 0) this.x = w;
-                    if (this.y > h) this.y = 0;
-                    if (this.y < 0) this.y = h;
-                }
-                draw() {
-                    ctx.beginPath();
-                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                    ctx.fillStyle = `rgba(168, 85, 247, ${this.opacity})`;
-                    ctx.fill();
-                }
-            }
-
-            for (let i = 0; i < count; i++) {
-                particles.push(new Particle());
-            }
-
-            function animateParticles() {
-                ctx.clearRect(0, 0, w, h);
-                particles.forEach(p => {
-                    p.update();
-                    p.draw();
-                });
-                for (let i = 0; i < particles.length; i++) {
-                    for (let j = i + 1; j < particles.length; j++) {
-                        const dx = particles[i].x - particles[j].x;
-                        const dy = particles[i].y - particles[j].y;
-                        const dist = Math.sqrt(dx * dx + dy * dy);
-                        if (dist < 150) {
-                            ctx.beginPath();
-                            ctx.moveTo(particles[i].x, particles[i].y);
-                            ctx.lineTo(particles[j].x, particles[j].y);
-                            ctx.strokeStyle = `rgba(168, 85, 247, ${0.08 * (1 - dist / 150)})`;
-                            ctx.lineWidth = 0.6;
-                            ctx.stroke();
-                        }
-                    }
-                }
-                requestAnimationFrame(animateParticles);
-            }
-            animateParticles();
-        })();
-
-        // ===== CONTENT LOCKER LOGIC =====
-        const tasks = { 1: false, 2: false, 3: false };
-
-        const taskBtns = document.querySelectorAll('.task-btn');
-        const progressFill = document.getElementById('progressFill');
-        const progressLabel = document.getElementById('progressLabel');
-        const downloadBtn = document.getElementById('downloadBtn');
-        const hintText = document.getElementById('hintText');
+        var DOWNLOAD_URL = 'https://www.mediafire.com/file/c5atj1r616owyy2/global-metadata.dat/file';
 
         function updateProgress() {
-            const completed = Object.values(tasks).filter(v => v).length;
-            const total = Object.keys(tasks).length;
-            const percent = (completed / total) * 100;
+            var done = 0;
+            for (var key in tasks) {
+                if (tasks[key]) done++;
+            }
+            var total = 3;
+            var percent = (done / total) * 100;
 
             progressFill.style.width = percent + '%';
-            progressLabel.textContent = `${completed} / ${total}`;
+            progressLabel.textContent = done + ' / ' + total;
 
-            if (completed === total) {
+            if (done === total) {
                 downloadBtn.disabled = false;
                 downloadBtn.classList.add('active');
-                downloadBtn.innerHTML = `
-                    <span class="btn-content"><i class="fas fa-download"></i> Download now</span>
-                    <span class="btn-glow"></span>
-                `;
-                hintText.textContent = '🎉 All tasks completed! Download ready.';
+                downloadBtn.innerHTML = '<i class="fas fa-download"></i> ดาวน์โหลดเลย';
+                hintText.textContent = '🎉 ครบทุกภารกิจแล้ว! พร้อมดาวน์โหลด';
                 hintText.classList.add('success');
 
-                gsap.fromTo(downloadBtn, { scale: 0.8, opacity: 0 }, {
-                    scale: 1,
-                    opacity: 1,
-                    duration: 0.8,
-                    ease: 'back.out(1.7)',
-                    delay: 0.2
-                });
+                if (typeof gsap !== 'undefined') {
+                    gsap.fromTo(downloadBtn, { scale: 0.7, opacity: 0 }, {
+                        scale: 1,
+                        opacity: 1,
+                        duration: 0.8,
+                        ease: 'back.out(1.7)'
+                    });
+                }
             }
         }
 
-        taskBtns.forEach(btn => {
-            btn.addEventListener('click', function() {
-                const taskId = parseInt(this.dataset.task);
-                if (tasks[taskId]) return;
+        var buttons = document.querySelectorAll('.btn-task');
 
-                // เปิดลิงก์ในแท็บใหม่
-                const url = this.dataset.url;
-                if (url) {
-                    window.open(url, '_blank');
-                }
+        for (var i = 0; i < buttons.length; i++) {
+            (function(btn) {
+                btn.addEventListener('click', function() {
+                    var taskId = parseInt(this.getAttribute('data-task'));
+                    if (tasks[taskId]) return;
 
-                // ทำเครื่องหมายว่าทำเสร็จแล้ว
-                tasks[taskId] = true;
-                this.classList.add('completed');
-                this.textContent = '✓ Completed';
-                this.disabled = true;
+                    var url = this.getAttribute('data-url');
+                    if (url) window.open(url, '_blank');
 
-                const card = this.closest('.task-card');
-                const status = card.querySelector('.task-status');
-                status.classList.add('show');
+                    tasks[taskId] = true;
+                    this.classList.add('done');
+                    this.innerHTML = '<i class="fas fa-check-circle"></i> เรียบร้อย';
+                    this.disabled = true;
 
-                gsap.fromTo(this, { scale: 1.1 }, {
-                    scale: 1,
-                    duration: 0.3,
-                    ease: 'power2.out'
-                });
+                    updateProgress();
 
-                updateProgress();
+                    var allDone = true;
+                    for (var k in tasks) {
+                        if (!tasks[k]) allDone = false;
+                    }
 
-                if (Object.values(tasks).every(v => v === true)) {
-                    gsap.fromTo('.task-card', { y: 0 }, {
-                        y: -8,
-                        duration: 0.5,
-                        stagger: 0.1,
-                        ease: 'power2.out',
-                        yoyo: true,
-                        repeat: 1
-                    });
-                }
-            });
-        });
-
-        // ===== DOWNLOAD BUTTON ACTION =====
-        downloadBtn.addEventListener('click', function() {
-            if (!this.disabled) {
-                gsap.fromTo(this, { scale: 1 }, {
-                    scale: 0.9,
-                    duration: 0.15,
-                    ease: 'power2.in',
-                    yoyo: true,
-                    repeat: 1,
-                    onComplete: () => {
-                        alert('🎉 Download started! (demo)');
+                    if (allDone) {
+                        var cards = document.querySelectorAll('.card');
+                        for (var c = 0; c < cards.length; c++) {
+                            cards[c].style.transition = 'transform 0.3s';
+                            cards[c].style.transform = 'translateY(-10px)';
+                            setTimeout(function(el) {
+                                el.style.transform = 'translateY(0)';
+                            }, 400, cards[c]);
+                        }
                     }
                 });
+            })(buttons[i]);
+        }
+
+        downloadBtn.addEventListener('click', function() {
+            if (!this.disabled) {
+                if (typeof gsap !== 'undefined') {
+                    gsap.fromTo(this, { scale: 1 }, {
+                        scale: 0.88,
+                        duration: 0.12,
+                        yoyo: true,
+                        repeat: 1,
+                        onComplete: function() {
+                            window.open(DOWNLOAD_URL, '_blank');
+                        }
+                    });
+                } else {
+                    window.open(DOWNLOAD_URL, '_blank');
+                }
             }
         });
+
+        console.log('✅ ปลดล็อกดาวน์โหลด ทำงานแล้ว!');
     </script>
 
 </body>
